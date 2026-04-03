@@ -1,5 +1,5 @@
 import { NextFunction as Next, Request, Response } from 'express';
-import { scrapeSearchedMoviesOrSeries } from '@/scrapers/search';
+import { scrapeSearchedMoviesOrSeries } from '../scrapers/search';
 
 type TController = (req: Request, res: Response, next?: Next) => Promise<void>;
 

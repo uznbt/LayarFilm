@@ -1,7 +1,7 @@
 import cheerio from 'cheerio';
 import { AxiosResponse } from 'axios';
 import { Request } from 'express';
-import { ISetOfCountries } from '@/types';
+import { ISetOfCountries } from '../types';
 import countries from '@/json/countries.json';
 
 /**

@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import * as cheerio from 'cheerio';
 import { AxiosResponse } from 'axios';
-import { IMovies, IMovieDetails, IStreamSources } from '@/types';
+import { IMovies, IMovieDetails, IStreamSources } from '../types';
 
 /**
  * Scrape movies asynchronously

@@ -2,7 +2,7 @@ import cheerio from 'cheerio';
 import { AxiosResponse } from 'axios';
 import { Request } from 'express';
 import { ISetOfCountries } from '../types';
-import countries from '@/json/countries.json';
+import countries from '../json/countries.json';
 
 /**
  * Scrape a set of countries asynchronously

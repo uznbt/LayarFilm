@@ -4,9 +4,6 @@
     "description": "Unofficial LK21 API",
     "main": "dist/index.js",
     "private": true,
-    "_moduleAliases": {
-        "@": "dist"
-    },
     "scripts": {
         "build": "tsc",
         "watch": "tsc -w",
@@ -55,7 +52,6 @@
         "cors": "^2.8.5",
         "dotenv": "^16.0.3",
         "express": "^4.18.2",
-        "module-alias": "^2.2.3",
         "morgan": "^1.10.0",
         "typescript": "^4.9.5",
         "ts-node": "^10.9.1",

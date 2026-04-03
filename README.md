@@ -1,42 +1,40 @@
-# 🎬 LayarFilm
+# LayarFilm
 
-![LayarFilm Banner](https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=2059&auto=format&fit=crop)
-
-**LayarFilm** adalah platform streaming film dan serial TV modern dengan antarmuka yang elegan, cepat, dan responsif. Dirancang dengan estetika *Premium Dark Mode* dan *Glassmorphism* untuk memberikan pengalaman menonton bioskop dari rumah Anda.
+LayarFilm adalah platform streaming film dan serial TV modern dengan antarmuka yang elegan, cepat, dan responsif. Dirancang dengan estetika Premium Dark Mode dan Glassmorphism untuk memberikan pengalaman menonton bioskop dari rumah Anda.
 
 ---
 
-## ✨ Fitur Unggulan
+## Fitur Unggulan
 
-- 🔍 **Pencarian Cerdas**: Temukan ribuan film dan serial dengan pencarian instan.
-- 🎞️ **Detail Lengkap**: Metadata akurat termasuk Sinopsis, Rating, Daftar Pemain (Cast), hingga Sutradara.
-- 📺 **Multi-Server Player**: Pilihan berbagai server streaming (P2P, TurboVIP, dll) untuk memastikan kelancaran pemutaran.
-- 📱 **Responshive Design**: Nyaman diakses dari perangkat mobile, tablet, maupun desktop.
-- 🚀 **Scraper Tangguh**: Terintegrasi dengan mirror terbaru (`tv3.lk21online.mom`) menggunakan logika *JSON-LD parsing* untuk data yang lebih valid.
+- Pencarian Cerdas: Temukan ribuan film dan serial dengan pencarian instan.
+- Detail Lengkap: Metadata akurat termasuk Sinopsis, Rating, Daftar Pemain (Cast), hingga Sutradara.
+- Multi-Server Player: Pilihan berbagai server streaming (P2P, TurboVIP, dll) untuk memastikan kelancaran pemutaran.
+- Responsive Design: Nyaman diakses dari perangkat mobile, tablet, maupun desktop.
+- Scraper Tangguh: Terintegrasi dengan mirror terbaru (tv3.lk21online.mom) menggunakan logika JSON-LD parsing untuk data yang lebih valid.
 
 ---
 
-## 🛠️ Teknologi (Tech Stack)
+## Teknologi (Tech Stack)
 
 ### Frontend
-- **React 19** & **TypeScript**
-- **Vite** (Build Tool super cepat)
-- **TailwindCSS** (Modern Styling)
-- **Lucide React** (Beautiful Icons)
-- **SWR** (Data Fetching & Caching)
+- React 19 & TypeScript
+- Vite (Build Tool super cepat)
+- TailwindCSS (Modern Styling)
+- Lucide React (Icons)
+- SWR (Data Fetching & Caching)
 
 ### Backend (lk21-api)
-- **Node.js** & **Express**
-- **Cheerio** (High-performance HTML parsing)
-- **TypeScript** (Type-safe codebase)
-- **Native Fetch API** (Reliable network requests)
+- Node.js & Express
+- Cheerio (High-performance HTML parsing)
+- TypeScript (Type-safe codebase)
+- Native Fetch API (Reliable network requests)
 
 ---
 
-## 🚀 Cara Menjalankan Project
+## Cara Menjalankan Project
 
 ### 1. Prasyarat
-Pastikan Anda sudah menginstal [Node.js](https://nodejs.org/).
+Pastikan Anda sudah menginstal Node.js.
 
 ### 2. Menjalankan Backend (API)
 ```bash
@@ -44,7 +42,7 @@ cd lk21-api
 npm install
 npm start
 ```
-*API akan berjalan di `http://localhost:3000`*
+*API akan berjalan di http://localhost:3000*
 
 ### 3. Menjalankan Frontend
 ```bash
@@ -52,11 +50,11 @@ npm start
 npm install
 npm run dev
 ```
-*Aplikasi akan berjalan di `http://localhost:5174`*
+*Aplikasi akan berjalan di http://localhost:5174*
 
 ---
 
-## 📂 Struktur Project
+## Struktur Project
 
 ```text
 LayarFilm/
@@ -68,15 +66,15 @@ LayarFilm/
 ├── src/               # Frontend React Source
 │   ├── components/
 │   ├── pages/
-│   └── services/      # API Intergration
+│   └── services/      # API Integration
 └── public/            # Static Assets
 ```
 
 ---
 
-## 📝 Catatan Sampingan
+## Catatan Sampingan
 Proyek ini dibuat untuk tujuan edukasi. Seluruh konten film bersumber dari pihak ketiga melalui metode web scraping.
 
-Dibuat dengan ❤️ oleh **uznbt** (Senior Frontend Engineer)
+Dibuat oleh: uznbt (Senior Frontend Engineer)
 
-© 2026 LayarFilm. All rights reserved.
+Copyright 2026 LayarFilm. All rights reserved.

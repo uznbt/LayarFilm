@@ -1,141 +1,61 @@
-import axios from '../utils/axios';
 import { NextFunction as Next, Request, Response } from 'express';
 import { scrapeMovieDetails, scrapeMovies } from '../scrapers/movie';
 import { LK21_URL } from '../config';
 
 type TController = (req: Request, res: Response, next?: Next) => Promise<void>;
 
-/**
- * Controller for `/movies` route
- * @param {Request} req
- * @param {Response} res
- * @param {Next} next
- */
-export const latestMovies: TController = async (req, res) => {
-    try {
-        const { page = 0 } = req.query;
-
-        const axiosRequest = await axios.get(
-            `${LK21_URL}/latest${
-                Number(page) > 1 ? `/page/${page}` : ''
-            }`
-        );
-
-        const payload = await scrapeMovies(req, axiosRequest);
-
-        res.status(200).json(payload);
-    } catch (err) {
-        console.error(err);
-
-        res.status(400).json(null);
-    }
+const commonHeaders = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.5',
+    'Referer': LK21_URL,
+    'Upgrade-Insecure-Requests': '1',
+    'Cache-Control': 'max-age=0',
 };
 
-/**
- * Controller for `/popular/movies` route
- * @param {Request} req
- * @param {Response} res
- * @param {Next} next
- */
-export const popularMovies: TController = async (req, res) => {
+const handleFetch = async (url: string, req: Request, res: Response, scraper: any) => {
     try {
-        const { page = 0 } = req.query;
-
-        const axiosRequest = await axios.get(
-            `${LK21_URL}/populer${
-                Number(page) > 1 ? `/page/${page}` : ''
-            }`
-        );
-
-        // scrape popular movies
-        const payload = await scrapeMovies(req, axiosRequest);
-
-        res.status(200).json(payload);
-    } catch (err) {
-        console.error(err);
-
-        res.status(400).json(null);
-    }
-};
-
-/**
- * Controller for `/recent-release/movies` route
- * @param {Request} req
- * @param {Response} res
- * @param {Next} next
- */
-export const recentReleaseMovies: TController = async (req, res) => {
-    try {
-        const { page = 0 } = req.query;
-
-        const axiosRequest = await axios.get(
-            `${LK21_URL}/release${
-                Number(page) > 1 ? `/page/${page}` : ''
-            }`
-        );
-
-        const payload = await scrapeMovies(req, axiosRequest);
-
-        res.status(200).json(payload);
-    } catch (err) {
-        console.error(err);
-
-        res.status(400).json(null);
-    }
-};
-
-/**
- * Controller for `/top-rated/movies` route
- * @param {Request} req
- * @param {Response} res
- * @param {Next} next
- */
-export const topRatedMovies: TController = async (req, res) => {
-    try {
-        const { page = 0 } = req.query;
-
-        const axiosRequest = await axios.get(
-            `${LK21_URL}/rating${
-                Number(page) > 1 ? `/page/${page}` : ''
-            }`
-        );
-
-        const payload = await scrapeMovies(req, axiosRequest);
-
-        res.status(200).json(payload);
-    } catch (err) {
-        console.error(err);
-
-        res.status(400).json(null);
-    }
-};
-
-/**
- * Controller for `/movies/{movieId}` route
- * @param {Request} req
- * @param {Response} res
- * @param {Next} next
- */
-export const movieDetails: TController = async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        const fetchReq = await fetch(`${LK21_URL}/${id}`, {
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                'Referer': LK21_URL,
-            }
-        });
+        console.log(`[API] Fetching ${url}`);
+        const response = await fetch(url, { headers: commonHeaders });
+        if (!response.ok) throw new Error(`Target site returned ${response.status}: ${response.statusText}`);
         
-        const html = await fetchReq.text();
+        const html = await response.text();
         const mockAxiosRes = { data: html } as any;
 
-        const payload = await scrapeMovieDetails(req, mockAxiosRes);
-
+        const payload = await scraper(req, mockAxiosRes);
         res.status(200).json(payload);
-    } catch (err) {
-        console.error(err);
-
-        res.status(400).json(null);
+    } catch (err: any) {
+        console.error(`[API Error] ${err.message}`);
+        res.status(400).json({ error: true, message: err.message, targetUrl: url });
     }
+};
+
+export const latestMovies: TController = async (req, res) => {
+    const { page = 1 } = req.query;
+    const url = `${LK21_URL}/latest${Number(page) > 1 ? `/page/${page}` : ''}`;
+    await handleFetch(url, req, res, scrapeMovies);
+};
+
+export const popularMovies: TController = async (req, res) => {
+    const { page = 1 } = req.query;
+    const url = `${LK21_URL}/populer${Number(page) > 1 ? `/page/${page}` : ''}`;
+    await handleFetch(url, req, res, scrapeMovies);
+};
+
+export const recentReleaseMovies: TController = async (req, res) => {
+    const { page = 1 } = req.query;
+    const url = `${LK21_URL}/release${Number(page) > 1 ? `/page/${page}` : ''}`;
+    await handleFetch(url, req, res, scrapeMovies);
+};
+
+export const topRatedMovies: TController = async (req, res) => {
+    const { page = 1 } = req.query;
+    const url = `${LK21_URL}/rating${Number(page) > 1 ? `/page/${page}` : ''}`;
+    await handleFetch(url, req, res, scrapeMovies);
+};
+
+export const movieDetails: TController = async (req, res) => {
+    const { id } = req.params;
+    const url = `${LK21_URL}/${id}`;
+    await handleFetch(url, req, res, scrapeMovieDetails);
 };

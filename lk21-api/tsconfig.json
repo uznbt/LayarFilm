@@ -4,9 +4,6 @@
         "module": "commonjs",
         "rootDir": "src",
         "baseUrl": ".",
-        "paths": {
-            "@/*": ["src/*"]
-        },
         "resolveJsonModule": true,
         "inlineSourceMap": true,
         "outDir": "dist",

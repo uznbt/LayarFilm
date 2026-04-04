@@ -1,3 +1,4 @@
+import { ND_URL } from '../config';
 import axios from '../utils/axios';
 import { NextFunction as Next, Request, Response } from 'express';
 import { scrapeSeries, scrapeSeriesDetails } from '../scrapers/series';
@@ -15,7 +16,7 @@ export const latestSeries: TController = async (req, res) => {
         const { page = 0 } = req.query;
 
         const axiosRequest = await axios.get(
-            `${process.env.ND_URL}/latest-series${
+            `${ND_URL}/latest-series${
                 Number(page) > 1 ? `/page/${page}` : ''
             }`
         );
@@ -41,7 +42,7 @@ export const popularSeries: TController = async (req, res) => {
         const { page = 0 } = req.query;
 
         const axiosRequest = await axios.get(
-            `${process.env.ND_URL}/populer${
+            `${ND_URL}/populer${
                 Number(page) > 1 ? `/page/${page}` : ''
             }`
         );
@@ -67,7 +68,7 @@ export const recentReleaseSeries: TController = async (req, res) => {
         const { page = 0 } = req.query;
 
         const axiosRequest = await axios.get(
-            `${process.env.ND_URL}/release${
+            `${ND_URL}/release${
                 Number(page) > 1 ? `/page/${page}` : ''
             }`
         );
@@ -93,7 +94,7 @@ export const topRatedSeries: TController = async (req, res) => {
         const { page = 0 } = req.query;
 
         const axiosRequest = await axios.get(
-            `${process.env.ND_URL}/rating${
+            `${ND_URL}/rating${
                 Number(page) > 1 ? `/page/${page}` : ''
             }`
         );
@@ -118,7 +119,7 @@ export const seriesDetails: TController = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const fetchReq = await fetch(`${process.env.ND_URL}/${id}`, {
+        const fetchReq = await fetch(`${ND_URL}/${id}`, {
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
             }
@@ -136,3 +137,4 @@ export const seriesDetails: TController = async (req, res) => {
         res.status(400).json(null);
     }
 };
+

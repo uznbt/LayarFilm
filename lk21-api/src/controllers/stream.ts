@@ -1,3 +1,4 @@
+import { LK21_URL, ND_URL } from '../config';
 import axios from '../utils/axios';
 import { NextFunction as Next, Request, Response } from 'express';
 import { scrapeStreamSources } from '../scrapers/stream';
@@ -17,7 +18,7 @@ export const streamMovie: TController = async (req, res) => {
         const movieId = originalUrl.split('/').reverse()[1];
 
         const axiosRequest = await axios.get(
-            `${process.env.LK21_URL}/${movieId}`
+            `${LK21_URL}/${movieId}`
         );
 
         const payload = await scrapeStreamSources(req, axiosRequest);
@@ -47,7 +48,7 @@ export const streamSeries: TController = async (req, res) => {
         const seriesId = _ids.join('-');
 
         const axiosRequest = await axios.get(
-            `${process.env.ND_URL}/${seriesId}-season-${season}-episode-${episode}-${year}`
+            `${ND_URL}/${seriesId}-season-${season}-episode-${episode}-${year}`
         );
 
         const payload = await scrapeStreamSources(req, axiosRequest);
@@ -59,3 +60,4 @@ export const streamSeries: TController = async (req, res) => {
         res.status(400).json(null);
     }
 };
+

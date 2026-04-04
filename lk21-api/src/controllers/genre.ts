@@ -1,3 +1,4 @@
+import { LK21_URL } from '../config';
 import axios from '../utils/axios';
 import { NextFunction as Next, Request, Response } from 'express';
 import { scrapeSetOfGenres } from '../scrapers/genre';
@@ -13,7 +14,7 @@ type TController = (req: Request, res: Response, next?: Next) => Promise<void>;
  */
 export const setOfGenres: TController = async (req, res) => {
     try {
-        const axiosRequest = await axios.get(`${process.env.LK21_URL}`);
+        const axiosRequest = await axios.get(`${LK21_URL}`);
 
         const payload = await scrapeSetOfGenres(req, axiosRequest);
 
@@ -37,7 +38,7 @@ export const moviesByGenre: TController = async (req, res) => {
         const { genre } = req.params;
 
         const axiosRequest = await axios.get(
-            `${process.env.LK21_URL}/genre/${genre.toLowerCase()}${
+            `${LK21_URL}/genre/${genre.toLowerCase()}${
                 Number(page) > 1 ? `/page/${page}` : ''
             }`
         );
@@ -51,3 +52,4 @@ export const moviesByGenre: TController = async (req, res) => {
         res.status(400).json(null);
     }
 };
+

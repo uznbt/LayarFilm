@@ -1,3 +1,4 @@
+import { LK21_URL } from '../config';
 import { NextFunction as Next, Request, Response } from 'express';
 import { scrapeSearchedMoviesOrSeries } from '../scrapers/search';
 
@@ -13,7 +14,7 @@ export const searchedMoviesOrSeries: TController = async (req, res) => {
     try {
         const { title = '' } = req.params;
 
-        const fetchReq = await fetch(`${process.env.LK21_URL}/?s=${title}`, {
+        const fetchReq = await fetch(`${LK21_URL}/?s=${title}`, {
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
             }
@@ -34,3 +35,4 @@ export const searchedMoviesOrSeries: TController = async (req, res) => {
         res.status(400).json([]);
     }
 };
+

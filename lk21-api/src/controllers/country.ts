@@ -1,3 +1,4 @@
+import { LK21_URL } from '../config';
 import axios from '../utils/axios';
 import { NextFunction as Next, Request, Response } from 'express';
 import { scrapeSetOfCountries } from '../scrapers/country';
@@ -14,7 +15,7 @@ type TController = (req: Request, res: Response, next?: Next) => Promise<void>;
 export const setOfCountries: TController = async (req, res) => {
     try {
         const axiosRequest = await axios.get(
-            `${process.env.LK21_URL}/rekomendasi-film-pintar`
+            `${LK21_URL}/rekomendasi-film-pintar`
         );
 
         const payload = await scrapeSetOfCountries(req, axiosRequest);
@@ -39,7 +40,7 @@ export const moviesByCountry: TController = async (req, res) => {
         const { country } = req.params;
 
         const axiosRequest = await axios.get(
-            `${process.env.LK21_URL}/country/${country.toLowerCase()}${
+            `${LK21_URL}/country/${country.toLowerCase()}${
                 Number(page) > 1 ? `/page/${page}` : ''
             }`
         );
@@ -53,3 +54,4 @@ export const moviesByCountry: TController = async (req, res) => {
         res.status(400).json(null);
     }
 };
+

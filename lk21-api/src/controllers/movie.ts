@@ -1,6 +1,7 @@
 import axios from '../utils/axios';
 import { NextFunction as Next, Request, Response } from 'express';
 import { scrapeMovieDetails, scrapeMovies } from '../scrapers/movie';
+import { LK21_URL } from '../config';
 
 type TController = (req: Request, res: Response, next?: Next) => Promise<void>;
 
@@ -15,7 +16,7 @@ export const latestMovies: TController = async (req, res) => {
         const { page = 0 } = req.query;
 
         const axiosRequest = await axios.get(
-            `${process.env.LK21_URL}/latest${
+            `${LK21_URL}/latest${
                 Number(page) > 1 ? `/page/${page}` : ''
             }`
         );
@@ -41,7 +42,7 @@ export const popularMovies: TController = async (req, res) => {
         const { page = 0 } = req.query;
 
         const axiosRequest = await axios.get(
-            `${process.env.LK21_URL}/populer${
+            `${LK21_URL}/populer${
                 Number(page) > 1 ? `/page/${page}` : ''
             }`
         );
@@ -68,7 +69,7 @@ export const recentReleaseMovies: TController = async (req, res) => {
         const { page = 0 } = req.query;
 
         const axiosRequest = await axios.get(
-            `${process.env.LK21_URL}/release${
+            `${LK21_URL}/release${
                 Number(page) > 1 ? `/page/${page}` : ''
             }`
         );
@@ -94,7 +95,7 @@ export const topRatedMovies: TController = async (req, res) => {
         const { page = 0 } = req.query;
 
         const axiosRequest = await axios.get(
-            `${process.env.LK21_URL}/rating${
+            `${LK21_URL}/rating${
                 Number(page) > 1 ? `/page/${page}` : ''
             }`
         );
@@ -119,9 +120,10 @@ export const movieDetails: TController = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const fetchReq = await fetch(`${process.env.LK21_URL}/${id}`, {
+        const fetchReq = await fetch(`${LK21_URL}/${id}`, {
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Referer': LK21_URL,
             }
         });
         

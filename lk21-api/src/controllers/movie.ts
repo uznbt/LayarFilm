@@ -32,14 +32,13 @@ const handleFetch = async (url: string, req: Request, res: Response, scraper: an
 
 export const latestMovies: TController = async (req, res) => {
     const { page = 1 } = req.query;
-    // UPDATED: Use /latest-movies instead of /latest which was 404
-    const url = `${LK21_URL}/latest-movies${Number(page) > 1 ? `/page/${page}` : ''}`;
+    // REFINED: Use root path for page 1 for maximum stability
+    const url = Number(page) <= 1 ? `${LK21_URL}/` : `${LK21_URL}/latest-movies/page/${page}`;
     await handleFetch(url, req, res, scrapeMovies);
 };
 
 export const popularMovies: TController = async (req, res) => {
     const { page = 1 } = req.query;
-    // UPDATED: Use /populer-movies as a more stable alternative
     const url = `${LK21_URL}/populer-movies${Number(page) > 1 ? `/page/${page}` : ''}`;
     await handleFetch(url, req, res, scrapeMovies);
 };

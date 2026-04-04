@@ -15,7 +15,7 @@ const commonHeaders = {
 
 const handleFetch = async (url: string, req: Request, res: Response, scraper: any) => {
     try {
-        console.log(`[API] Fetching ${url}`);
+        console.log(`[Movie API] Fetching ${url}`);
         const response = await fetch(url, { headers: commonHeaders });
         if (!response.ok) throw new Error(`Target site returned ${response.status}: ${response.statusText}`);
         
@@ -25,20 +25,22 @@ const handleFetch = async (url: string, req: Request, res: Response, scraper: an
         const payload = await scraper(req, mockAxiosRes);
         res.status(200).json(payload);
     } catch (err: any) {
-        console.error(`[API Error] ${err.message}`);
+        console.error(`[Movie API Error] ${err.message}`);
         res.status(400).json({ error: true, message: err.message, targetUrl: url });
     }
 };
 
 export const latestMovies: TController = async (req, res) => {
     const { page = 1 } = req.query;
-    const url = `${LK21_URL}/latest${Number(page) > 1 ? `/page/${page}` : ''}`;
+    // UPDATED: Use /latest-movies instead of /latest which was 404
+    const url = `${LK21_URL}/latest-movies${Number(page) > 1 ? `/page/${page}` : ''}`;
     await handleFetch(url, req, res, scrapeMovies);
 };
 
 export const popularMovies: TController = async (req, res) => {
     const { page = 1 } = req.query;
-    const url = `${LK21_URL}/populer${Number(page) > 1 ? `/page/${page}` : ''}`;
+    // UPDATED: Use /populer-movies as a more stable alternative
+    const url = `${LK21_URL}/populer-movies${Number(page) > 1 ? `/page/${page}` : ''}`;
     await handleFetch(url, req, res, scrapeMovies);
 };
 

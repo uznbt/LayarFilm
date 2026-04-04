@@ -14,13 +14,13 @@ app.use(cors({ origin: true, credentials: true }));
 
 app.use(routes);
 
-app.get('/health', (req: Request, res: Response) => {
+app.get('/', (req: Request, res: Response) => {
     res.status(200).json({
-        status: 'ok',
-        mirrors: {
-            LK21: 'https://tv2.lk21online.mom',
-            ND: 'https://tv2.lk21online.mom'
-        }
+        message: 'Unofficial LK21 (LayarKaca21) and NontonDrama APIs',
+        data: {
+            LK21_URL,
+            ND_URL,
+        },
     });
 });
 

@@ -20,21 +20,29 @@ export const scrapeSeries = async (
         protocol,
     } = req;
 
-    $('article').each((i, el) => {
-        const parent = $(el).find('figure > a');
-        const href = parent.attr('href');
-        const slug = href ? href.replace(/^\//, '') : '';
+    const items = $('article, .sliders li, .grid-item, .post-item');
+    
+    items.each((i, el) => {
+        const $el = $(el);
+        let anchor = $el.find('figure > a');
+        if (anchor.length === 0) anchor = $el.find('a').first();
+        if (anchor.length === 0 && $el.is('a')) anchor = $el;
+        
+        const href = anchor.attr('href');
+        if (!href || href === '#' || href.includes('javascript:')) return;
+        
+        const slug = href.replace(/^https?:\/\/[^\/]+/, '').replace(/^\//, '').replace(/\/$/, '');
 
-        // Only add items that have an episode badge (series)
-        const hasEpisode = parent.find('span.episode').length > 0;
-        const hasSeason = parent.find('span.duration').text().trim().startsWith('S.');
+        // Only add items that have an episode badge or season label (series)
+        const hasEpisode = anchor.find('span.episode, .meta-label:contains("Episode")').length > 0;
+        const hasSeason = anchor.find('span.duration, .meta-label').text().trim().includes('S.');
         if (!hasEpisode && !hasSeason) return;
 
-        const title = parent.find('.poster-title').text() || parent.find('img').attr('alt');
-        const posterImg = parent.find('img').attr('src') || parent.find('img').attr('data-src');
-        const rating = parent.find('.rating').text().replace(/[^\d.]/g, '').trim();
-        const episodeText = parent.find('span.episode strong').text().trim();
-        const year = parent.find('span.year').text().trim();
+        const title = anchor.find('.poster-title, figcaption h3, h2').text().trim() || anchor.find('img').attr('alt') || '';
+        const posterImg = anchor.find('img').attr('src') || anchor.find('img').attr('data-src') || '';
+        const rating = anchor.find('.rating').text().replace(/[^\d.]/g, '').trim();
+        const episodeText = anchor.find('span.episode strong, .meta-label:contains("Episode")').text().replace(/[^\d]/g, '').trim();
+        const year = anchor.find('span.year, .meta-label').first().text().trim();
 
         const obj = {} as ISeries;
 
@@ -47,6 +55,9 @@ export const scrapeSeries = async (
         obj['episode'] = episodeText ? Number(episodeText) : 0;
         obj['url'] = `${protocol}://${host}/series/${slug}`;
         obj['genres'] = [];
+
+        // Avoid duplicates
+        if (payload.find(s => s._id === obj._id)) return;
 
         payload.push(obj);
     });
@@ -161,12 +172,23 @@ export const scrapeSeriesDetails = async (
 
     // Seasons and Episodes
     const seasons: ISeasonsList[] = [];
-    const epsWrappers = $('.serial-wrapper, .episode-list');
+    const epsWrappers = $('.serial-wrapper, .episode-list, .season-select');
     
     if (epsWrappers.length > 0) {
         epsWrappers.each((i, el) => {
-            const seasonNum = i + 1;
-            const episodeCount = $(el).find('a').length;
+            const $el = $(el);
+            let episodeCount = 0;
+            let seasonNum = i + 1;
+
+            if ($el.is('select')) {
+                // Handle dropdown - might need more complex logic if episodes aren't all visible
+                // For now, assume current season is the one shown
+                episodeCount = $('.episode-list a, .serial-wrapper a, .episode-item a').length;
+                seasonNum = Number($el.val()) || 1;
+            } else {
+                episodeCount = $el.find('a').length;
+            }
+
             if (episodeCount > 0) {
                 seasons.push({
                     season: seasonNum,
@@ -174,8 +196,11 @@ export const scrapeSeriesDetails = async (
                 });
             }
         });
-    } else {
-        const episodeButtons = $('.episode-list a, .serial-wrapper a');
+    } 
+    
+    // Fallback: If no wrappers or seasons found yet, look for episode links directly
+    if (seasons.length === 0) {
+        const episodeButtons = $('.episode-list a, .serial-wrapper a, .episode-item a, a[href*="-episode-"]');
         if (episodeButtons.length > 0) {
             seasons.push({
                 season: 1,

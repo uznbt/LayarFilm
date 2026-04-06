@@ -22,21 +22,29 @@ export const scrapeMovies = async (
 
 
 
-    $('article').each((i, el) => {
-        const parent = $(el).find('figure > a');
-        const href = parent.attr('href');
-        const slug = href ? href.replace(/^\//, '') : '';
+    const items = $('article, .sliders li, .grid-item, .post-item');
+    
+    items.each((i, el) => {
+        const $el = $(el);
+        let anchor = $el.find('figure > a');
+        if (anchor.length === 0) anchor = $el.find('a').first();
+        if (anchor.length === 0 && $el.is('a')) anchor = $el;
+        
+        const href = anchor.attr('href');
+        if (!href || href === '#' || href.includes('javascript:')) return;
+        
+        const slug = href.replace(/^https?:\/\/[^\/]+/, '').replace(/^\//, '').replace(/\/$/, '');
         
         let isSeries = false;
-        if (parent.find('span.episode').length > 0) isSeries = true;
+        if (anchor.find('span.episode, .meta-label:contains("Episode")').length > 0) isSeries = true;
         
         // Skip series in movie scraper
         if (isSeries) return;
 
-        const title = parent.find('.poster-title').text() || parent.find('img').attr('alt');
-        const posterImg = parent.find('img').attr('src') || parent.find('img').attr('data-src');
-        const rating = parent.find('.rating').text().replace(/[^\d.]/g, '').trim();
-        const year = parent.find('span.year').text().trim();
+        const title = anchor.find('.poster-title, figcaption h3, h2').text().trim() || anchor.find('img').attr('alt') || '';
+        const posterImg = anchor.find('img').attr('src') || anchor.find('img').attr('data-src') || '';
+        const rating = anchor.find('.rating').text().replace(/[^\d.]/g, '').trim();
+        const year = anchor.find('span.year, .meta-label').first().text().trim();
 
         const obj = {} as IMovies;
 
@@ -47,8 +55,11 @@ export const scrapeMovies = async (
         obj['rating'] = rating || '';
         obj['year'] = year || '';
         obj['url'] = `${protocol}://${host}/movies/${slug}`;
-        obj['qualityResolution'] = $(parent).find('span.label').text() || '';
+        obj['qualityResolution'] = anchor.find('span.label, .quality').first().text().trim() || '';
 
+        // Avoid duplicates
+        if (payload.find(m => m._id === obj._id)) return;
+        
         payload.push(obj);
     });
 

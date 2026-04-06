@@ -3,6 +3,7 @@ dotenv.config();
 
 // Standard mirrors that are known to work
 const MIRRORS = [
+    'https://tv3.nontondrama.my',
     'https://tv2.lk21online.mom',
     'https://tv3.lk21online.mom',
     'https://tv4.lk21online.mom',
